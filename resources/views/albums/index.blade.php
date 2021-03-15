@@ -3,87 +3,126 @@
     Albums
 @endsection
 
-@section('styles')
-    <style>
-        body {
-            padding-top: 50px;
-        }
-        .starter-template {
-            padding: 40px 15px;
-            text-align: center;
-        }
-    </style>
-@endsection
-@include('modals.deleteModal')
 @section('content')
-<div class="container">
 
-    <div class="starter-template">
+    @include('modals.deleteModal')
 
-        <div class="row">
+    <div class="container">
+
+        <a class="btn btn-small btn-primary my-3" href="{{url('albums/create')}}">Create New Album</a>
+
+        <div class="row my-3">
+
 
             @foreach($albums as $album)
-                <div class="col-lg-3">
-                <div class="thumbnail" style="min-height: 514px;">
-                    <img alt="{{$album->name}}" src="{{$album->cover_image}}">
-                    <div class="caption">
-                        <h3>{{$album->name}}</h3>
-                        <input type="hidden" class="data-id" value="{{$album->id}}"></input>
-                        <p>{{count($album->Photos)}} image(s).</p>
-                        <p>Created date:  {{ date("d F Y",strtotime($album->created_at)) }} at {{date("g:ha",strtotime($album->created_at)) }}</p>
-                        <p><a href="{{URL::route('show_album',array('id'=>$album->id))}}" class="btn btn-big btn-primary">Show Album</a></p>
-                        <p><button  class="btn btn-big btn-primary" data-toggle="modal" data-target="#deleteModal" value="{{$album->name}}" id="delete_record" >delete Album</button></p>
 
+                <div class="col-lg-4">
+                    <div class="card">
+                        <img class="card-img-top" alt="{{$album->name}}"
+                             src="{{ asset('storage/'.$album->cover_image) }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{$album->name}}</h5>
+                            <p class="card-text">{{$album->images_count}} image(s).</p>
+                            <div class="row w-100 mx-0">
+                                <div class="col-6 my-1">
+                                    <a href="{{url("albums/{$album->id}")}}"
+                                       class="btn btn-primary w-100">
+                                        Show Album
+                                    </a>
+                                </div>
+
+                                <div class="col-6 my-1">
+                                    <a href="{{url("albums/{$album->id}/edit")}}"
+                                       class="btn btn-secondary w-100">
+                                        Edit Album
+                                    </a>
+                                </div>
+
+                                <div class="col-6 my-1">
+                                    <a href="{{url("albums/{$album->id}/images")}}"
+                                       class="btn btn-success w-100">
+                                        Assign Images
+                                    </a>
+                                </div>
+
+                                <div class="col-6 my-1">
+                                    <button class="btn btn-danger w-100" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            onclick="deleteAlbum({{$album->id}})" value="{{$album->id}}">
+                                        delete Album
+                                    </button>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        <div class="card-footer text-muted">
+                            {{ \Carbon\Carbon::parse($album->created_at)->diffForHumans() }}
+                        </div>
                     </div>
                 </div>
-            </div>
+
+
+                <input type="hidden" class="data-id" value="{{$album->id}}">
             @endforeach
         </div>
 
+        <!-- /.container -->
+    </div>
 
-    </div><!-- /.container -->
-</div>
-<script>
+    <script>
 
-    $(document).ready(function() {
-        $(document).on('click', '#delete_record', function () {
-            var x = document.getElementById("delete_record").value;
-            alert(x);
-        });
+        function deleteAlbum(albumId) {
 
             $(document).on('click', '#delItem', function () {
-            console.log($('.data-id').val());
+                // alert(albumId)
+                $.ajax({
+                    url: "{{'albums'}}/" + albumId,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "DELETE",
+                    success: function (data) {
+                        //if success reload ajax table
+                        if (data === "success") {
+                            $('#deleteModal').hide();
+                            window.location.reload();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error deleting data');
+                    }
+                });
+            });
+        }
+
+
+        $("#movItem").click(function (e) {
+            e.preventDefault();
+            var ele = $(this).val();
+            $("#move").click(function (e) {
+                var elem = $(this).val();
+                $.ajax({
+                    url: "{{'deletemovealbum'}}/" + $('#delItem').val() + "/" + $('#move').val(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "DELETE",
+                    success: function (data) {
+                        //if success reload ajax table
+                        if (data == "success") {
+                            $('#moveModel').hide();
+                            window.location.reload();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error deleting data');
+                    }
+                });
+            });
         });
-    });
 
-
-
-    $("#movItem").click(function (e) {
-        e.preventDefault();
-        var ele = $(this).val();
-        $("#move").click(function (e) {
-            var elem = $(this).val();
-        $.ajax({
-            url: "{{'deletemovealbum'}}/" + $('#delItem').val()+"/"+$('#move').val(),
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            method: "DELETE",
-            success: function (data) {
-                //if success reload ajax table
-                if (data == "success") {
-                    $('#moveModel').hide();
-                    window.location.reload();
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('Error deleting data');
-            }
-        });
-
-
-    });
-    });
-</script>
+    </script>
 
 @endsection

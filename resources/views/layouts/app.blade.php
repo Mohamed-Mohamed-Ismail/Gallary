@@ -1,41 +1,54 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title')</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <!-- Latest compiled and minified CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+
+{{--    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>--}}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+
+    <style>
+        .card-img-top {
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+
     @yield('styles')
 </head>
+
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <button type="button" class="navbar-toggle"data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span lclass="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/">Awesome Albums</a>
-        <div class="nav-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="{{URL::route('create_album_form')}}">Create New Album</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{url('albums')}}">Awesome Albums</a>
     </div>
+</nav>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-12 my-3">
+            @include('layouts.flash-message')
+        </div>
+    </div>
+
+    @yield('content')
 </div>
 
-<!-- Modal -->
-
-
-@yield('content')
 </body>
-
 
 </html>

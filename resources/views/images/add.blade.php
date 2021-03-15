@@ -4,26 +4,26 @@
     Add New Image
 @endsection
 @section('content')
-<div class="container" style="text-align: center;">
-    <div class="span4" style="display: inline-block;margin-top:100px;">
-
-
-        <form  method="POST"action="{{URL::route('add_image_to_album')}}"enctype="multipart/form-data">
+    <div class="container">
+        <form class="my-5" method="POST" action="{{url("albums/{$album->id}/images")}}" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="album_id"value="{{$album->id}}" />
             <fieldset>
-                <legend>Add an Image to Album: {{$album->name}}</legend>
-                <div class="form-group">
-                    <label for="description">Image Name</label>
-                    <input name="name" type="text" class="form-control" placeholder="Image Name"></input>
+
+                <h4>Add an Image to Album: {{$album->name}}</h4>
+
+                <div class="form-group col-6 text-left my-3">
+                    <label for="name">Image Name</label>
+                    <input name="name" required type="text" class="form-control" placeholder="Image Name">
                 </div>
-                <div class="form-group">
-                    <label for="image">Select an Image</label>
-                    <input type="file" name="image">
+
+                <div class="form-group col-6 text-left my-3">
+                    <label for="formFile" class="form-label">Select an Image</label>
+                    <input class="form-control" type="file" name="image" required id="formFile">
                 </div>
-                <button type="submit" class="btn btn-default">Add Image!</button>
+
+                <button type="submit" class="btn btn-primary ml-auto">Add Image</button>
+
             </fieldset>
         </form>
     </div>
-</div>
 @endsection
